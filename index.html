@@ -84,37 +84,48 @@
         </p>
       </div>
       
-      <div class="grid md:grid-cols-3 lg:grid-cols-5 gap-4 justify-center" id="productMatrix">
+      <!-- 首页产品矩阵：优化手机端显示（核心修改部分） -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-4 justify-center" id="productMatrix">
         <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
-          <img src="./images/product_blindstone.jpg" alt="盲道石" class="w-full h-64 object-cover" onError="this.src='https://picsum.photos/seed/blindstone/600/800'">
+          <img src="./images/product_blindstone.jpg" alt="盲道石" 
+               class="w-full h-48 sm:h-56 md:h-64 object-cover" <!-- 响应式高度：手机端h-48，平板/桌面递增 -->
+               onError="this.src='https://picsum.photos/seed/blindstone/600/800'">
           <div class="p-4">
             <h3 class="text-lg font-bold">盲道石</h3>
             <p class="text-sm text-stone-600">市政工程专用 防滑耐磨</p>
           </div>
         </div>
         <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
-          <img src="./images/product_curbstone.jpg" alt="路沿石" class="w-full h-64 object-cover" onError="this.src='https://picsum.photos/seed/curbstone/600/800'">
+          <img src="./images/product_curbstone.jpg" alt="路沿石" 
+               class="w-full h-48 sm:h-56 md:h-64 object-cover"
+               onError="this.src='https://picsum.photos/seed/curbstone/600/800'">
           <div class="p-4">
             <h3 class="text-lg font-bold">路沿石</h3>
             <p class="text-sm text-stone-600">道路建设 稳固耐用</p>
           </div>
         </div>
         <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
-          <img src="./images/product_fenghua_burn.jpg" alt="封开花烧面" class="w-full h-64 object-cover" onError="this.src='https://picsum.photos/seed/fenghuaburn/600/800'">
+          <img src="./images/product_fenghua_burn.jpg" alt="封开花烧面" 
+               class="w-full h-48 sm:h-56 md:h-64 object-cover"
+               onError="this.src='https://picsum.photos/seed/fenghuaburn/600/800'">
           <div class="p-4">
             <h3 class="text-lg font-bold">封开花烧面</h3>
             <p class="text-sm text-stone-600">防滑耐磨 户外首选</p>
           </div>
         </div>
         <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
-          <img src="./images/product_guangxin_red.jpg" alt="广信红光面" class="w-full h-64 object-cover" onError="this.src='https://picsum.photos/seed/guangxinred/600/800'">
+          <img src="./images/product_guangxin_red.jpg" alt="广信红光面" 
+               class="w-full h-48 sm:h-56 md:h-64 object-cover"
+               onError="this.src='https://picsum.photos/seed/guangxinred/600/800'">
           <div class="p-4">
             <h3 class="text-lg font-bold">广信红光面</h3>
             <p class="text-sm text-stone-600">高端装饰 色泽亮丽</p>
           </div>
         </div>
         <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
-          <img src="./images/product_stone_carving.jpg" alt="石材雕刻" class="w-full h-64 object-cover" onError="this.src='https://picsum.photos/seed/stonecarving/600/800'">
+          <img src="./images/product_stone_carving.jpg" alt="石材雕刻" 
+               class="w-full h-48 sm:h-56 md:h-64 object-cover"
+               onError="this.src='https://picsum.photos/seed/stonecarving/600/800'">
           <div class="p-4">
             <h3 class="text-lg font-bold">石材雕刻</h3>
             <p class="text-sm text-stone-600">园林景观 艺术呈现</p>
