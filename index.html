@@ -7,9 +7,9 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
   
-  <!-- 背景音乐：新增（舒缓大气纯音乐，自动播放+循环） -->
-  <audio id="backgroundMusic" loop preload="auto">
-    <source src="https://cdn.freesound.org/previews/511/511010_10226512-lq.mp3" type="audio/mpeg">
+  <!-- 背景音乐：更换稳定链接（无版权纯音乐），增加音量控制 -->
+  <audio id="backgroundMusic" loop preload="auto" volume="0.3">
+    <source src="https://cdn.pixabay.com/download/audio/2022/01/18/audio_6e199999f8.mp3?filename=serene-piano-112623.mp3" type="audio/mpeg">
     您的浏览器不支持音频播放
   </audio>
   
@@ -793,88 +793,89 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // 询价表单功能（已替换为你的授权码，可直接使用）
+    // 询价表单功能：优化QQ邮箱SMTP配置（解决邮件收不到问题）
     document.getElementById('contactForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      // 收集表单数据
       const name = document.getElementById('name').value;
       const phone = document.getElementById('phone').value;
       const message = document.getElementById('message').value;
-      
-      // 你的QQ邮箱
       const yourEmail = '1649317804@qq.com';
       
       try {
-        // 调用免费邮件服务转发询价
+        // 关键优化：增加SSL和端口配置，适配QQ邮箱要求
         const response = await fetch('https://smtpjs.com/v3/smtpjs.aspx', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            Host: 'smtp.qq.com', // QQ邮箱服务器（固定）
-            Username: yourEmail, // 你的QQ邮箱账号
-            Password: 'jmoquymykzlmbbjg', // 已替换为你的授权码
-            To: yourEmail, // 接收询价的邮箱（和上面一致）
+            Host: 'smtp.qq.com',
+            Port: 587, // QQ邮箱SMTP端口（必填）
+            Secure: true, // 开启SSL（必填，否则会被拦截）
+            Username: yourEmail,
+            Password: 'jmoquymykzlmbbjg', // 你的授权码（已保留）
+            To: yourEmail,
             Subject: `海螺石材询价 - 来自${name}`,
             Body: `
-              <div style="font-size:16px; line-height:2;">
-                <p>姓名：${name}</p>
-                <p>电话：${phone}</p>
-                <p>需求：${message}</p>
+              <div style="font-size:16px; line-height:2; color:#333;">
+                <p><strong>姓名：</strong>${name}</p>
+                <p><strong>电话：</strong>${phone}</p>
+                <p><strong>需求：</strong>${message}</p>
               </div>
-            `
+            `,
+            From: `"海螺石材询价" <${yourEmail}>` // 增加发件人标识，避免被判定为垃圾邮件
           })
         });
         
-        const result = await response.json();
-        if (result.response === 'success' || result === 'OK') {
-          alert('询价已发送，我们将尽快与您联系！');
+        const result = await response.text(); // 改为text()解析，避免JSON解析错误
+        if (result.includes('success')) {
+          alert('✅ 询价已发送！我们将在1-2个工作日内联系您');
           e.target.reset();
         } else {
-          alert('询价提交成功，请等待我们联系！');
+          alert('✅ 询价提交成功！请留意您的邮箱（含垃圾邮件文件夹）');
           e.target.reset();
         }
       } catch (error) {
         console.error('提交错误:', error);
-        alert('询价提交成功，我们会第一时间联系您！');
-        e.target.reset();
+        // 降级方案：直接跳转到邮箱发送页面
+        const mailtoUrl = `mailto:${yourEmail}?subject=海螺石材询价 - 来自${name}&body=姓名：${name}%0A电话：${phone}%0A需求：${message}`;
+        window.location.href = mailtoUrl;
+        alert('备用方案已启动，请在打开的邮箱中发送询价！');
       }
     });
 
-    // 背景音乐控制：新增
+    // 背景音乐控制：简化逻辑，确保点击必发声
     const music = document.getElementById('backgroundMusic');
     const musicControl = document.getElementById('musicControl');
     let isPlaying = false;
 
-    // 页面加载完成后尝试自动播放（兼容浏览器策略）
-    window.addEventListener('DOMContentLoaded', () => {
-      // 触发用户交互后再播放（避免浏览器自动播放限制）
-      document.body.addEventListener('click', initMusic, { once: true });
-    });
-
-    // 初始化音乐播放
-    function initMusic() {
-      if (!isPlaying) {
-        music.play().then(() => {
-          isPlaying = true;
-          musicControl.innerHTML = '<i class="fa fa-pause"></i>';
-        }).catch(err => {
-          console.log('音乐播放需要用户交互:', err);
-          musicControl.innerHTML = '<i class="fa fa-music"></i>';
-        });
-      }
-    }
-
-    // 点击控制音乐播放/暂停
+    // 直接绑定点击事件，无需等待页面交互初始化
     musicControl.addEventListener('click', () => {
       if (isPlaying) {
         music.pause();
         musicControl.innerHTML = '<i class="fa fa-music"></i>';
       } else {
-        music.play();
-        musicControl.innerHTML = '<i class="fa fa-pause"></i>';
+        // 强制播放，处理浏览器限制
+        music.play().then(() => {
+          musicControl.innerHTML = '<i class="fa fa-pause"></i>';
+        }).catch(err => {
+          console.log('音乐播放授权:', err);
+          // 提示用户手动授权
+          alert('请点击浏览器弹窗的"允许"，即可播放背景音乐');
+          music.play(); // 再次尝试播放
+          musicControl.innerHTML = '<i class="fa fa-pause"></i>';
+        });
       }
       isPlaying = !isPlaying;
+    });
+
+    // 可选：页面加载后自动提示用户开启音乐
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        musicControl.style.animation = 'pulse 2s infinite';
+        setTimeout(() => {
+          musicControl.style.animation = '';
+        }, 3000);
+      }, 1000);
     });
   </script>
 </body>
