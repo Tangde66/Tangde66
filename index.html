@@ -7,13 +7,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
   
-  <!-- 背景音乐：国内稳定链接+直接播放配置（音量0.5，带备用控制） -->
-  <audio id="backgroundMusic" loop preload="auto" volume="0.5" controls style="display: none;">
-    <!-- 国内CDN稳定链接（无版权纯音乐，支持跨域） -->
-    <source src="https://cdn9.dissolve.com/p/D1301_42_126/D1301_42_126_1920x1080_25fps.mp3" type="audio/mpeg">
-    您的浏览器不支持音频播放
-  </audio>
-  
   <!-- Tailwind配置 -->
   <script>
     tailwind.config = {
@@ -39,22 +32,10 @@
       .stat-card { transition: transform 0.3s ease; }
       .stat-card:hover { transform: translateY(-5px); }
       .hero-bg { width: 100%; height: 100%; object-fit: cover; }
-      /* 音乐控制按钮样式（更醒目，增加加载状态） */
-      .music-btn { position: fixed; top: 100px; right: 20px; z-index: 60; width: 48px; height: 48px; border-radius: 50%; background: #d97706; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(217, 119, 6, 0.4); transition: all 0.3s ease; font-size: 18px; }
-      .music-btn:hover { background: #b45309; transform: scale(1.15); }
-      .music-loading { animation: spin 1s linear infinite; }
-      @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-      @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.6); } 70% { box-shadow: 0 0 0 10px rgba(217, 119, 6, 0); } 100% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0); } }
-      .music-pulse { animation: pulse 2s infinite; }
     }
   </style>
 </head>
 <body class="font-sans text-stone-800 bg-stone-50 overflow-x-hidden">
-  <!-- 音乐控制按钮：增加加载/状态提示 -->
-  <div class="music-btn music-pulse" id="musicControl">
-    <i class="fa fa-music"></i>
-  </div>
-
   <!-- 导航栏 -->
   <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-transparent">
     <div class="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -88,7 +69,7 @@
     </div>
   </nav>
 
-  <!-- 首屏区域：删除产品卡片，仅保留品牌宣传 -->
+  <!-- 首屏区域：删除产品卡片，仅保留品牌宣传 + 原生音频控制条 -->
   <header class="h-screen relative flex items-center justify-center overflow-hidden">
     <!-- 本地矿山背景图：路径改为你的文件（确保放在images文件夹） -->
     <img src="./images/mine_hero_cover.jpg" alt="古利山矿山全景" class="hero-bg absolute inset-0 z-0"
@@ -97,9 +78,18 @@
     
     <div class="container mx-auto px-4 z-20 text-center">
       <h1 class="text-[clamp(2.5rem,8vw,5rem)] font-bold text-white mb-6 text-shadow">海螺石材</h1>
-      <p class="text-[clamp(1.2rem,3vw,1.8rem)] text-white max-w-3xl mx-auto mb-12 text-shadow">
+      <p class="text-[clamp(1.2rem,3vw,1.8rem)] text-white max-w-3xl mx-auto mb-8 text-shadow">
         古利山优质花岗岩，源于自然，精工铸就
       </p>
+      
+      <!-- 原生音频控制条（100%兼容，用户手动点击播放） -->
+      <div class="max-w-md mx-auto mb-12">
+        <audio controls class="w-full rounded-lg shadow-lg">
+          <source src="https://cdn9.dissolve.com/p/D1301_42_126/D1301_42_126_1920x1080_25fps.mp3" type="audio/mpeg">
+          您的浏览器不支持音频播放，请更换现代浏览器（Chrome/Edge/Firefox）
+        </audio>
+        <p class="text-white text-sm mt-2 opacity-80">💡 点击播放按钮即可开启背景音乐，可调节音量</p>
+      </div>
       
       <a href="#products" class="inline-block bg-earth-500 hover:bg-earth-600 text-white font-medium px-8 py-3 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
         探索产品系列 <i class="fa fa-arrow-right ml-2"></i>
@@ -846,62 +836,6 @@
         window.location.href = mailtoUrl;
         alert('备用方案已启动，请在打开的邮箱中发送询价！');
       }
-    });
-
-    // 背景音乐控制：终极方案（确保点击必发声）
-    const music = document.getElementById('backgroundMusic');
-    const musicControl = document.getElementById('musicControl');
-    let isPlaying = false;
-
-    // 音频加载状态监听
-    music.addEventListener('loadeddata', () => {
-      musicControl.classList.remove('music-loading');
-      musicControl.innerHTML = '<i class="fa fa-music"></i>';
-    });
-    music.addEventListener('error', () => {
-      musicControl.classList.remove('music-loading');
-      musicControl.innerHTML = '<i class="fa fa-exclamation"></i>';
-      alert('背景音乐加载失败！请检查网络或刷新页面重试');
-    });
-
-    // 核心播放逻辑：点击直接触发，无任何延迟
-    musicControl.addEventListener('click', () => {
-      if (isPlaying) {
-        // 暂停逻辑
-        music.pause();
-        musicControl.innerHTML = '<i class="fa fa-music"></i>';
-        musicControl.classList.add('music-pulse');
-      } else {
-        // 播放逻辑：直接调用play()，处理所有异常
-        musicControl.classList.remove('music-pulse');
-        musicControl.classList.add('music-loading');
-        musicControl.innerHTML = '<i class="fa fa-spinner"></i>';
-        
-        music.play().then(() => {
-          // 播放成功
-          musicControl.classList.remove('music-loading');
-          musicControl.innerHTML = '<i class="fa fa-pause"></i>';
-        }).catch(err => {
-          // 处理浏览器限制
-          musicControl.classList.remove('music-loading');
-          musicControl.innerHTML = '<i class="fa fa-music"></i>';
-          musicControl.classList.add('music-pulse');
-          
-          // 分情况提示
-          if (err.name === 'NotAllowedError') {
-            alert('浏览器禁止自动播放！请点击浏览器地址栏左侧的"小喇叭"图标，允许音频播放后重试');
-          } else {
-            alert('播放失败！请刷新页面或更换浏览器重试（推荐Chrome/Edge）');
-            console.error('播放错误:', err);
-          }
-        });
-      }
-      isPlaying = !isPlaying;
-    });
-
-    // 页面加载后自动尝试加载音频（不自动播放，仅预加载）
-    window.addEventListener('DOMContentLoaded', () => {
-      music.load(); // 强制加载音频
     });
   </script>
 </body>
